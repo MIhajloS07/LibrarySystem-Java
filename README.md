@@ -151,7 +151,8 @@ mvn exec:java -Dexec.mainClass="view.MainView"
 <img width="421" height="241" alt="image" src="https://github.com/user-attachments/assets/20c47a09-5035-4488-96d5-aacfc0391151" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img width="241" height="241" alt="icons8-java-logo-480" src="https://github.com/user-attachments/assets/57769431-a6df-4a21-91a8-4c13747f9d08" />
-
+<br>
+<img width="634" height="125" alt="sqlscheme" src="https://github.com/user-attachments/assets/5aed7261-ab9f-4058-98fa-5f86a6499e62" />
 
 ## License
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
