@@ -1,6 +1,7 @@
 # Library System (Java + SQLite)
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![Java Version](https://img.shields.io/badge/Java-8%2B-blue.svg)](#) 
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![Java Version](https://img.shields.io/badge/Java-8%2B-blue.svg)](#)  ![Maven](https://img.shields.io/badge/Maven-Build-success) ![JUnit5](https://img.shields.io/badge/Tests-JUnit5-green)
+
 
 **Library System** is a production‑minded, console‑based Java application that implements a clean **Model‑View‑Controller (MVC)** architecture, persistent storage with **SQLite**, automated unit tests with **JUnit 5**, and a Maven build lifecycle. The codebase is organized, documented, and designed to be used as a professional portfolio piece or a technical demonstration.
 
