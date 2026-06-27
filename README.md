@@ -15,7 +15,6 @@
 - [Testing and Quality](#testing-and-quality)
 - [Getting Started](#getting-started)
 - [Advantages and Integration Opportunities](#advantages-and-integration-opportunities)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
