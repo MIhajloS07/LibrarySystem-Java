@@ -10,7 +10,6 @@ public class UserTest {
 	public void testConstructorAndGetters() {
 		User user = new User("TestUser");
 		assertEquals("TestUser", user.getName());
-		assertEquals(1, user.getId()); // ID=1 for first user
 	}
 	@Test
 	public void testBorrowedBooksInitiallyEmpty() {

@@ -9,7 +9,7 @@ import controller.*;
  * Provides a console-based interface for interacting with the library,
  * including options to add, remove, lend, return, sort, and search books.
  */
-public class mainView {
+public class MainView {
 	/**
      * Starts the library system console application.
      * Displays the menu and handles user input for various operations:
