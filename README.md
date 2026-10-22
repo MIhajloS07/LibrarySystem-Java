@@ -11,18 +11,20 @@
 </p>
 
 <p align="center">
-  <img alt="Tests" src="https://img.shields.io/badge/tests-30%20passing-success?style=flat-square">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-30%20passing-success?style=flat-square&logo=checkmarx&logoColor=white">
   <img alt="Architecture" src="https://img.shields.io/badge/architecture-MVC-blueviolet?style=flat-square">
+  <img alt="Database" src="https://img.shields.io/badge/storage-persistent-0ea5e9?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square">
 </p>
 
 <p align="center">
-  <a href="#overview">Overview</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="#testing">Testing</a> ·
-  <a href="#docker">Docker</a> ·
-  <a href="#design-decisions">Design decisions</a> ·
+  <a href="#overview">Overview</a> &nbsp;·&nbsp;
+  <a href="#features">Features</a> &nbsp;·&nbsp;
+  <a href="#quick-start">Quick start</a> &nbsp;·&nbsp;
+  <a href="#architecture">Architecture</a> &nbsp;·&nbsp;
+  <a href="#testing">Testing</a> &nbsp;·&nbsp;
+  <a href="#docker">Docker</a> &nbsp;·&nbsp;
+  <a href="#design-decisions">Design decisions</a> &nbsp;·&nbsp;
   <a href="#roadmap">Roadmap</a>
 </p>
 
@@ -30,64 +32,21 @@
 
 ## Overview
 
-Library System is a console application for managing a book collection, its users and lending operations. It is written in Java 21 using a strict **Model-View-Controller** separation, persists data in **SQLite** through plain **JDBC**, and ships as a multi-stage **Docker** image that runs the full test suite during the build.
+Library System is a console application for managing a book collection, its users and lending operations. It is written in Java 21 with a strict **Model-View-Controller** separation, persists data in **SQLite** through plain **JDBC**, and ships as a multi-stage **Docker** image that runs the full test suite during the build.
 
-The goal of the project was to build a small but complete application the way a production service would be structured: clear layers, SQL isolated from business logic, automated tests wired into the build, and a reproducible runtime.
+The goal was to build a small but complete application structured the way a production service would be: clear layers, SQL isolated from business logic, automated tests wired into the build, and a reproducible runtime.
 
-<table>
-  <tr>
-    <td align="center"><b>30</b><br><sub>automated tests</sub></td>
-    <td align="center"><b>3</b><br><sub>architectural layers</sub></td>
-    <td align="center"><b>2</b><br><sub>stage Docker build</sub></td>
-    <td align="center"><b>0</b><br><sub>external DB servers</sub></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=java,maven,sqlite,docker,git,github&theme=dark" alt="Tech stack">
+</p>
 
 ---
 
 ## Features
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-
-**Library**
-- Add and remove books
-- List the full catalogue
-- Lend a book to a user
-- Return a borrowed book
-- View currently borrowed books
-
-</td>
-    <td width="50%" valign="top">
-
-**Search and sorting**
-- Search by author
-- Search by publication year
-- Sort by title
-- Sort by year
-
-</td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-
-**Users**
-- Create and manage users
-- Track borrowed books per user
-- Tie every lending operation to a user
-
-</td>
-    <td width="50%" valign="top">
-
-**Persistence**
-- SQLite storage via JDBC
-- Dedicated database controllers
-- Book availability tracked in the database
-
-</td>
-  </tr>
-</table>
+<p align="center">
+  <img src="assets/features.svg" alt="Library, search and sorting, users, persistence" width="100%">
+</p>
 
 ---
 
@@ -118,38 +77,22 @@ mvn package    # run tests and build the JAR into target/
 
 ## Architecture
 
-The application is split into three layers. The view never touches the database, and SQL never leaks into business logic.
+The application has three layers plus a dedicated persistence tier. The view never touches the database, and SQL never leaks into business logic. The animation below shows a request travelling to the database and the result coming back.
 
-```mermaid
-flowchart LR
-    U([User]) --> V
+<p align="center">
+  <img src="assets/architecture.svg" alt="MVC architecture and request flow" width="100%">
+</p>
 
-    subgraph View
-        V[MainUI / MainView]
-    end
+### Layer responsibilities
 
-    subgraph Controller
-        LC[LibraryController]
-        UC[UserController]
-        BDB[BookDbController]
-        DBC[DbConnectionController]
-    end
+| Layer | Classes | Responsibility |
+| --- | --- | --- |
+| **Model** | `Book`, `User`, `Library` | Domain entities and their state |
+| **View** | `MainUI`, `MainView` | Menu, input, output. Delegates everything else to controllers |
+| **Controller** | `LibraryController`, `UserController` | Business logic |
+| **Persistence** | `BookDbController`, `DbConnectionController` | SQL and connection handling, kept apart from business logic |
 
-    subgraph Model
-        L[Library]
-        B[Book]
-        US[User]
-    end
-
-    V --> LC
-    V --> UC
-    LC --> L
-    UC --> US
-    L --> B
-    LC --> BDB
-    BDB --> DBC
-    DBC --> DB[(SQLite)]
-```
+Controller contracts are defined as interfaces, which keeps layers loosely coupled and straightforward to test in isolation.
 
 ### Domain model
 
@@ -165,16 +108,27 @@ classDiagram
     User "1" --> "*" Book : borrows
 ```
 
-### Layer responsibilities
+### Lending a book
 
-| Layer | Classes | Responsibility |
-| --- | --- | --- |
-| **Model** | `Book`, `User`, `Library` | Domain entities and their state |
-| **View** | `MainUI`, `MainView` | Menu, input, output. Delegates everything else to controllers |
-| **Controller** | `LibraryController`, `UserController` | Business logic |
-| **Persistence** | `BookDbController`, `DbConnectionController` | SQL and connection handling, kept apart from business logic |
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant V as View
+    participant C as LibraryController
+    participant P as BookDbController
+    participant D as SQLite
 
-Controller contracts are defined as interfaces, which keeps the layers loosely coupled and makes them straightforward to test in isolation.
+    U->>V: Choose "lend book"
+    V->>C: Lend request
+    C->>C: Apply lending rules
+    C->>P: Persist new state
+    P->>D: SQL via JDBC
+    D-->>P: Result
+    P-->>C: Done
+    C-->>V: Outcome
+    V-->>U: Confirmation
+```
 
 ---
 
@@ -188,9 +142,7 @@ The database stores books, users, lending operations and book availability. All 
   <img src="https://github.com/user-attachments/assets/5aed7261-ab9f-4058-98fa-5f86a6499e62" alt="SQLite database schema" width="80%">
 </p>
 
-### Collection processing
-
-Searching and sorting use the **Java Stream API** instead of hand-written loops, which keeps filtering by author or year, and ordering by title or year, short and readable.
+Searching and sorting use the **Java Stream API** instead of hand-written loops, which keeps filtering by author or year and ordering by title or year short and readable.
 
 ---
 
@@ -198,16 +150,16 @@ Searching and sorting use the **Java Stream API** instead of hand-written loops,
 
 Tests are written with **JUnit 5** and run automatically as part of the Maven lifecycle.
 
+<p align="center">
+  <img src="assets/tests.svg" alt="30 of 30 tests passing" width="100%">
+</p>
+
 | Area | Covered |
 | --- | --- |
 | Model | Entity behaviour |
 | Controllers | Business operations |
 | Library | Lending and returning flow |
 | Database | Persistence operations |
-
-```text
-Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
-```
 
 ```bash
 mvn test
@@ -219,21 +171,9 @@ mvn test
 
 The Dockerfile uses a multi-stage build so the final image contains only what is needed to run the application.
 
-```mermaid
-flowchart LR
-    S[Source + pom.xml] --> B
-
-    subgraph B["Stage 1: build"]
-        direction TB
-        M["maven:3.9-eclipse-temurin-21"] --> T[Run JUnit tests] --> P[Package JAR]
-    end
-
-    P -- "copy JAR only" --> R
-
-    subgraph R["Stage 2: runtime"]
-        J["eclipse-temurin:21-jre"] --> A[Run application]
-    end
-```
+<p align="center">
+  <img src="assets/docker.svg" alt="Multi-stage Docker build" width="100%">
+</p>
 
 | Stage | Base image | Purpose |
 | --- | --- | --- |
@@ -264,6 +204,7 @@ LibrarySystemMVC/
 │   └── test/java/
 │       ├── model/
 │       └── controller/
+├── assets/
 ├── pom.xml
 ├── Dockerfile
 ├── .dockerignore
@@ -274,12 +215,14 @@ LibrarySystemMVC/
 
 ## Design decisions
 
-- **SQL isolated from business logic.** Persistence lives in `BookDbController` and `DbConnectionController`, so the rest of the code does not depend on how data is stored. Switching databases means changing one layer.
-- **Interfaces for controller contracts.** Layers depend on abstractions, which keeps coupling low and tests simple.
-- **Thin view.** The view only reads input and prints results. No business rules live there.
-- **Tests gate the build.** Tests run inside the Docker build, so an image can never be produced from failing code.
-- **Multi-stage image.** Maven and the JDK stay in the build stage; the runtime image carries only a JRE and the JAR.
-- **SQLite over a database server.** The goal was to practise real SQL and JDBC without operational overhead.
+| Decision | Reason |
+| --- | --- |
+| **SQL isolated in persistence controllers** | The rest of the code does not depend on how data is stored. Switching databases means changing one layer. |
+| **Interfaces for controller contracts** | Layers depend on abstractions, which keeps coupling low and tests simple. |
+| **Thin view** | The view reads input and prints results. No business rules live there. |
+| **Tests gate the Docker build** | An image can never be produced from failing code. |
+| **Multi-stage image** | Maven and the JDK stay in the build stage. The runtime image carries only a JRE and the JAR. |
+| **SQLite over a database server** | Real SQL and JDBC practice without operational overhead. |
 
 ---
 
@@ -304,7 +247,7 @@ LibrarySystemMVC/
 - [ ] Docker volume for persistent SQLite storage
 - [ ] Input validation and improved CLI experience
 - [ ] Additional integration tests
-- [ ] CI pipeline (GitHub Actions)
+- [ ] CI pipeline with GitHub Actions
 - [ ] REST API layer
 - [ ] Migration path to PostgreSQL or MySQL
 - [ ] GUI client
