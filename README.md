@@ -1,211 +1,213 @@
-# Library System — Java MVC
+<p align="center">
+  <img src="assets/header.svg" alt="Library System - Java MVC" width="100%">
+</p>
 
-![Java](https://img.shields.io/badge/Java-21-blue)
-![Maven](https://img.shields.io/badge/Maven-Build-success)
-![JUnit 5](https://img.shields.io/badge/Tests-JUnit%205-green)
-![SQLite](https://img.shields.io/badge/Database-SQLite-003B57)
-![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+<p align="center">
+  <img alt="Java 21" src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white">
+  <img alt="Maven" src="https://img.shields.io/badge/Maven-3.9-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white">
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-JDBC-003B57?style=for-the-badge&logo=sqlite&logoColor=white">
+  <img alt="JUnit 5" src="https://img.shields.io/badge/JUnit-5-25A162?style=for-the-badge&logo=junit5&logoColor=white">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+</p>
 
-**Library System** is a console-based Java application for managing books, users, and lending operations. The project is built around the **Model-View-Controller (MVC)** architecture and uses **SQLite** for persistent data storage, **JUnit 5** for automated testing, **Maven** for dependency and build management, and **Docker** for containerized execution.
+<p align="center">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-30%20passing-success?style=flat-square">
+  <img alt="Architecture" src="https://img.shields.io/badge/architecture-MVC-blueviolet?style=flat-square">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square">
+</p>
 
-The project demonstrates practical use of **object-oriented programming, MVC architecture, JDBC, relational database integration, automated testing, Java Stream API, Maven, and Docker**.
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#testing">Testing</a> ·
+  <a href="#docker">Docker</a> ·
+  <a href="#design-decisions">Design decisions</a> ·
+  <a href="#roadmap">Roadmap</a>
+</p>
 
 ---
 
-## Table of Contents
+## Overview
 
-* [Features](#features)
-* [Technologies](#technologies)
-* [Architecture](#architecture)
-* [Data Persistence](#data-persistence)
-* [Testing](#testing)
-* [Project Structure](#project-structure)
-* [Getting Started](#getting-started)
-* [Running with Maven](#running-with-maven)
-* [Running with Docker](#running-with-docker)
-* [Docker Architecture](#docker-architecture)
-* [Screenshots](#screenshots)
-* [Future Improvements](#future-improvements)
-* [License](#license)
+Library System is a console application for managing a book collection, its users and lending operations. It is written in Java 21 using a strict **Model-View-Controller** separation, persists data in **SQLite** through plain **JDBC**, and ships as a multi-stage **Docker** image that runs the full test suite during the build.
+
+The goal of the project was to build a small but complete application the way a production service would be structured: clear layers, SQL isolated from business logic, automated tests wired into the build, and a reproducible runtime.
+
+<table>
+  <tr>
+    <td align="center"><b>30</b><br><sub>automated tests</sub></td>
+    <td align="center"><b>3</b><br><sub>architectural layers</sub></td>
+    <td align="center"><b>2</b><br><sub>stage Docker build</sub></td>
+    <td align="center"><b>0</b><br><sub>external DB servers</sub></td>
+  </tr>
+</table>
 
 ---
 
 ## Features
 
-### Library Management
+<table>
+  <tr>
+    <td width="50%" valign="top">
 
-* Add books to the library
-* Remove books
-* List all books
-* Lend books to users
-* Return borrowed books
-* Display borrowed books
+**Library**
+- Add and remove books
+- List the full catalogue
+- Lend a book to a user
+- Return a borrowed book
+- View currently borrowed books
 
-### Search and Sorting
+</td>
+    <td width="50%" valign="top">
 
-* Search books by author
-* Search books by publication year
-* Sort books by title
-* Sort books by year
+**Search and sorting**
+- Search by author
+- Search by publication year
+- Sort by title
+- Sort by year
 
-### User Management
+</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
 
-* Create and manage users
-* Track borrowed books
-* Associate lending operations with users
+**Users**
+- Create and manage users
+- Track borrowed books per user
+- Tie every lending operation to a user
 
-### Persistence
+</td>
+    <td width="50%" valign="top">
 
-* Persistent storage using **SQLite**
-* Database access implemented using **JDBC**
-* Dedicated database controllers for persistence operations
+**Persistence**
+- SQLite storage via JDBC
+- Dedicated database controllers
+- Book availability tracked in the database
 
-### Testing
-
-* Automated tests using **JUnit 5**
-* Model and controller testing
-* Database-related testing
-* Maven test lifecycle integration
-
-### Containerization
-
-* Dockerized application
-* Multi-stage Docker build
-* Maven build and tests executed during the Docker image build
-* Lightweight Java 21 runtime image for the final container
+</td>
+  </tr>
+</table>
 
 ---
 
-## Technologies
+## Quick start
 
-| Technology          | Purpose                                      |
-| ------------------- | -------------------------------------------- |
-| **Java 21**         | Application development                      |
-| **Maven**           | Dependency management and build automation   |
-| **SQLite**          | Persistent relational database               |
-| **JDBC**            | Database connectivity                        |
-| **JUnit 5**         | Automated testing                            |
-| **Java Stream API** | Collection filtering, sorting and processing |
-| **Docker**          | Containerization and reproducible execution  |
-| **Git / GitHub**    | Version control and source-code hosting      |
+### With Docker
+
+```bash
+git clone https://github.com/MIhajloS07/LibrarySystem-Java.git
+cd LibrarySystem-Java
+
+docker build -t library-system .
+docker run --rm -it library-system
+```
+
+The build runs the tests first. If any test fails, no image is produced.
+
+### With Maven
+
+Requires **JDK 21** and **Apache Maven**.
+
+```bash
+mvn test       # run the test suite
+mvn package    # run tests and build the JAR into target/
+```
 
 ---
 
 ## Architecture
 
-The application follows the **Model-View-Controller (MVC)** architectural pattern.
+The application is split into three layers. The view never touches the database, and SQL never leaks into business logic.
 
-<img width="600" height="463" alt="image" src="https://github.com/user-attachments/assets/b67df1ef-47eb-4145-a4ea-94c03b07ff4a" />
+```mermaid
+flowchart LR
+    U([User]) --> V
 
+    subgraph View
+        V[MainUI / MainView]
+    end
 
-### Model
+    subgraph Controller
+        LC[LibraryController]
+        UC[UserController]
+        BDB[BookDbController]
+        DBC[DbConnectionController]
+    end
 
-The model layer contains the main domain objects:
+    subgraph Model
+        L[Library]
+        B[Book]
+        US[User]
+    end
 
-* `Book`
-* `User`
-* `Library`
+    V --> LC
+    V --> UC
+    LC --> L
+    UC --> US
+    L --> B
+    LC --> BDB
+    BDB --> DBC
+    DBC --> DB[(SQLite)]
+```
 
-These classes represent the application's core entities and their state.
+### Domain model
 
-### Controller
+```mermaid
+classDiagram
+    direction LR
+    class Library
+    class Book
+    class User
 
-The controller layer contains both business and persistence logic.
+    Library "1" o-- "*" Book : holds
+    Library "1" o-- "*" User : registers
+    User "1" --> "*" Book : borrows
+```
 
-Examples include:
+### Layer responsibilities
 
-* `LibraryController`
-* `UserController`
-* `BookDbController`
-* `DbConnectionController`
+| Layer | Classes | Responsibility |
+| --- | --- | --- |
+| **Model** | `Book`, `User`, `Library` | Domain entities and their state |
+| **View** | `MainUI`, `MainView` | Menu, input, output. Delegates everything else to controllers |
+| **Controller** | `LibraryController`, `UserController` | Business logic |
+| **Persistence** | `BookDbController`, `DbConnectionController` | SQL and connection handling, kept apart from business logic |
 
-Interfaces are used for controller contracts, helping keep the application modular and easier to test.
-
-### View
-
-The view layer provides the console-based user interface.
-
-The main view is responsible for:
-
-* displaying the library menu
-* reading user input
-* displaying results
-* delegating operations to controllers
-
-Business logic is kept outside the view layer.
-
----
-
-## Data Persistence
-
-The application uses **SQLite** as its relational database.
-
-Database communication is handled through **JDBC**, with database-specific operations separated into dedicated controllers.
-
-The database stores information required for:
-
-* books
-* users
-* lending operations
-* book availability/status
-
-This separation keeps SQL/database operations independent from the main business logic.
-
-### SQLite
-
-SQLite was chosen because it provides a lightweight relational database that does not require a separate database server.
-
-This makes the project easy to run locally while still providing experience with:
-
-* relational data
-* SQL
-* JDBC
-* database connections
-* CRUD operations
-* persistence
+Controller contracts are defined as interfaces, which keeps the layers loosely coupled and makes them straightforward to test in isolation.
 
 ---
 
-## Java Stream API
+## Data persistence
 
-The project uses the **Java Stream API** for collection processing.
+SQLite was chosen deliberately: it is a real relational database with full SQL support, but needs no server, which keeps the project trivial to run locally and inside a container.
 
-Examples include:
+The database stores books, users, lending operations and book availability. All access goes through JDBC and is confined to the persistence controllers.
 
-* filtering books
-* searching by author
-* searching by year
-* sorting books by title
-* sorting books by publication year
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5aed7261-ab9f-4058-98fa-5f86a6499e62" alt="SQLite database schema" width="80%">
+</p>
 
-Streams help keep collection-processing operations concise and readable.
+### Collection processing
+
+Searching and sorting use the **Java Stream API** instead of hand-written loops, which keeps filtering by author or year, and ordering by title or year, short and readable.
 
 ---
 
 ## Testing
 
-The project uses **JUnit 5** for automated testing.
+Tests are written with **JUnit 5** and run automatically as part of the Maven lifecycle.
 
-Tests cover important application functionality including:
-
-* model behavior
-* controller operations
-* library operations
-* database-related functionality
-
-The Maven build is configured to execute the test suite automatically.
-
-The current test suite contains **30 tests**, all passing successfully.
+| Area | Covered |
+| --- | --- |
+| Model | Entity behaviour |
+| Controllers | Business operations |
+| Library | Lending and returning flow |
+| Database | Persistence operations |
 
 ```text
-Tests run: 30
-Failures: 0
-Errors: 0
-Skipped: 0
+Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
 ```
-
-Tests can be executed with:
 
 ```bash
 mvn test
@@ -213,35 +215,55 @@ mvn test
 
 ---
 
-## Project Structure
+## Docker
+
+The Dockerfile uses a multi-stage build so the final image contains only what is needed to run the application.
+
+```mermaid
+flowchart LR
+    S[Source + pom.xml] --> B
+
+    subgraph B["Stage 1: build"]
+        direction TB
+        M["maven:3.9-eclipse-temurin-21"] --> T[Run JUnit tests] --> P[Package JAR]
+    end
+
+    P -- "copy JAR only" --> R
+
+    subgraph R["Stage 2: runtime"]
+        J["eclipse-temurin:21-jre"] --> A[Run application]
+    end
+```
+
+| Stage | Base image | Purpose |
+| --- | --- | --- |
+| Build | `maven:3.9-eclipse-temurin-21` | Compile, run tests, package |
+| Runtime | `eclipse-temurin:21-jre` | Run the packaged JAR on a JRE only |
+
+---
+
+## Project structure
 
 ```text
 LibrarySystemMVC/
-│
 ├── src/
-│   ├── main/
-│   │   └── java/
-│   │       ├── controller/
-│   │       │   ├── BookDbController.java
-│   │       │   ├── DbConnectionController.java
-│   │       │   ├── LibraryController.java
-│   │       │   ├── UserController.java
-│   │       │   └── interfaces...
-│   │       │
-│   │       ├── model/
-│   │       │   ├── Book.java
-│   │       │   ├── User.java
-│   │       │   └── Library.java
-│   │       │
-│   │       └── view/
-│   │           ├── MainUI.java
-│   │           └── MainView.java
-│   │
-│   └── test/
-│       └── java/
-│           ├── model/
-│           └── controller/
-│
+│   ├── main/java/
+│   │   ├── controller/
+│   │   │   ├── BookDbController.java
+│   │   │   ├── DbConnectionController.java
+│   │   │   ├── LibraryController.java
+│   │   │   ├── UserController.java
+│   │   │   └── (interfaces)
+│   │   ├── model/
+│   │   │   ├── Book.java
+│   │   │   ├── User.java
+│   │   │   └── Library.java
+│   │   └── view/
+│   │       ├── MainUI.java
+│   │       └── MainView.java
+│   └── test/java/
+│       ├── model/
+│       └── controller/
 ├── pom.xml
 ├── Dockerfile
 ├── .dockerignore
@@ -250,160 +272,53 @@ LibrarySystemMVC/
 
 ---
 
-# Getting Started
+## Design decisions
 
-## Prerequisites
-
-### Local development
-
-For running the project directly on your machine:
-
-* **JDK 21**
-* **Apache Maven**
-* **Git**
-
-### Docker
-
-For containerized execution:
-
-* **Docker Desktop** or Docker Engine
+- **SQL isolated from business logic.** Persistence lives in `BookDbController` and `DbConnectionController`, so the rest of the code does not depend on how data is stored. Switching databases means changing one layer.
+- **Interfaces for controller contracts.** Layers depend on abstractions, which keeps coupling low and tests simple.
+- **Thin view.** The view only reads input and prints results. No business rules live there.
+- **Tests gate the build.** Tests run inside the Docker build, so an image can never be produced from failing code.
+- **Multi-stage image.** Maven and the JDK stay in the build stage; the runtime image carries only a JRE and the JAR.
+- **SQLite over a database server.** The goal was to practise real SQL and JDBC without operational overhead.
 
 ---
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/MIhajloS07/LibrarySystem-Java.git
-cd LibrarySystem-Java
-```
-
----
-
-# Running with Maven
-
-Build the project:
-
-```bash
-mvn package
-```
-
-Run the tests:
-
-```bash
-mvn test
-```
-
-The packaged application is generated in the `target` directory.
-
----
-
-# Running with Docker
-
-The application includes a **multi-stage Dockerfile** that separates the build environment from the runtime environment.
-
-### Build the Docker image
-
-```bash
-docker build -t library-system .
-```
-
-### Run the application
-
-```bash
-docker run --rm -it library-system
-```
-
-The container starts the application automatically and displays the library management menu.
-
----
-
-# Docker Architecture
-
-The Dockerfile uses two stages.
-
-### Build Stage
-
-The first stage uses Maven with Java 21:
-
-```text
-maven:3.9-eclipse-temurin-21
-```
-
-It:
-
-1. Copies the Maven configuration and source code.
-2. Runs the JUnit test suite.
-3. Packages the application into a JAR file.
-
-### Runtime Stage
-
-The final stage uses:
-
-```text
-eclipse-temurin:21-jre
-```
-
-Only the packaged application JAR is copied into the runtime image.
-
-<img width="580" height="400" alt="image" src="https://github.com/user-attachments/assets/f8ced66d-b949-424c-bf93-2e042bd16e1c" />
-
-
-This approach keeps the final runtime image separate from the Maven build environment.
-
----
-
-# Screenshots
-
-## Screenshots
 
 ## Screenshots
 
 <table>
   <tr>
-    <td>
-      <img width="200" height="241"
-           src="https://github.com/user-attachments/assets/89eaa3d5-16e3-4744-a005-170663137dfd"
-           alt="Library System">
-    </td>
-    <td>
-      <img width="421" height="241"
-           src="https://github.com/user-attachments/assets/20c47a09-5035-4488-96d5-aacfc0391151"
-           alt="Library System">
-    </td>
-    <td>
-      <img width="241" height="241"
-           src="https://github.com/user-attachments/assets/57769431-a6df-4a21-91a8-4c13747f9d08"
-           alt="Java">
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" align="center">
-      <img width="634" height="125"
-           src="https://github.com/user-attachments/assets/5aed7261-ab9f-4058-98fa-5f86a6499e62"
-           alt="SQLite database schema">
-    </td>
+    <td><img width="200" src="https://github.com/user-attachments/assets/89eaa3d5-16e3-4744-a005-170663137dfd" alt="Library System"></td>
+    <td><img width="421" src="https://github.com/user-attachments/assets/20c47a09-5035-4488-96d5-aacfc0391151" alt="Library System menu"></td>
+    <td><img width="241" src="https://github.com/user-attachments/assets/57769431-a6df-4a21-91a8-4c13747f9d08" alt="Java"></td>
   </tr>
 </table>
 
 ---
 
-# Future Improvements
+## Roadmap
 
-Possible future improvements include:
-
-* Docker volume for persistent SQLite storage
-* Improved CLI user experience and input validation
-* Additional integration tests
-* Database migration toward PostgreSQL or MySQL
-* REST API layer
-* GUI client
-* CI/CD pipeline
-* Deployment to a cloud environment
+- [x] MVC architecture with interface-based controllers
+- [x] SQLite persistence over JDBC
+- [x] JUnit 5 test suite (30 tests)
+- [x] Multi-stage Docker build with tests in the pipeline
+- [ ] Docker volume for persistent SQLite storage
+- [ ] Input validation and improved CLI experience
+- [ ] Additional integration tests
+- [ ] CI pipeline (GitHub Actions)
+- [ ] REST API layer
+- [ ] Migration path to PostgreSQL or MySQL
+- [ ] GUI client
 
 ---
 
-# License
+## License
 
-This project is licensed under the **MIT License**.
+Released under the [MIT License](LICENSE).
 
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+<p align="center">
+  <img src="assets/footer.svg" alt="" width="100%">
+</p>
+
+<p align="center">
+  <sub>Built by <a href="https://github.com/MIhajloS07">MihajloS07</a></sub>
+</p>
